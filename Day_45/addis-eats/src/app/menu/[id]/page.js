@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
 
   const description = `${dish.summary} ${dish.price} ETB.`;
   const title = `${dish.name} · Addis Eats`;
-  const image = `/menu/${dish.id}/opengraph-image`;
+  const image = `${baseurl}/og-homepage.png`;
   return {
     title: { absolute: title },
     description,
