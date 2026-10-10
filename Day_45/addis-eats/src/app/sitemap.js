@@ -1,6 +1,6 @@
 import { dishes } from "./menu/dishes";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://addis-eats.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://addis-eats-nextjsd45-advanced-proje.vercel.app";
 
 export default function sitemap() {
   return [

@@ -6,9 +6,8 @@ search, and SEO metadata.
 
 ## Deployed URL
 
-**Deployment pending:** set `NEXT_PUBLIC_SITE_URL` to the Vercel production URL
-and replace this line with that verified URL after deployment. The source uses
-the same value for the canonical metadata, sitemap, and robots file.
+**Production URL:** https://addis-eats-nextjsd45-advanced-proje.vercel.app/
+The source uses this host for canonical metadata, the sitemap, and robots file.
 
 ## Run from a fresh clone
 
@@ -39,7 +38,7 @@ npm run start
 ## Deploy and verify
 
 1. Create a Vercel project with `addis-eats` as its root directory.
-2. Add `NEXT_PUBLIC_SITE_URL` with the production URL and, optionally,
+2. Add `NEXT_PUBLIC_SITE_URL` with the production URL above and, optionally,
    `NEXT_PUBLIC_GA_MEASUREMENT_ID` for deferred Google Analytics.
 3. Deploy, then verify `/`, `/menu`, `/sitemap.xml`, `/robots.txt`, and each
    Open Graph image route from the deployed URL.
