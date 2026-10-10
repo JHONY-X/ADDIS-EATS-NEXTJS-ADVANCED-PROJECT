@@ -15,7 +15,8 @@ export async function generateMetadata({ params }) {
 
   const description = `${dish.summary} ${dish.price} ETB.`;
   const title = `${dish.name} · Addis Eats`;
-  const image = `/menu/${dish.id}/opengraph-image`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://addis-eats.vercel.app";
+  const image = new URL(`/menu/${dish.id}/opengraph-image`, siteUrl).toString();
   return {
     title: { absolute: title },
     description,
