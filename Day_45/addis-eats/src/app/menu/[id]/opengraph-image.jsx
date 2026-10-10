@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { headers } from "next/headers";
+import sharp from "sharp";
 import { findDish } from "../dishes";
 
 export const alt = "Addis Eats dish";
@@ -12,25 +12,16 @@ export default async function OpenGraphImage({ params }) {
 
   if (!dish) return new Response("Dish not found", { status: 404 });
 
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
-  const protocol = requestHeaders.get("x-forwarded-proto") || "https";
-  const optimizedImageUrl = new URL("/_next/image", `${protocol}://${host}`);
-  optimizedImageUrl.searchParams.set("url", dish.image);
-  optimizedImageUrl.searchParams.set("w", "1200");
-  optimizedImageUrl.searchParams.set("q", "75");
-
-  const imageResponse = await fetch(optimizedImageUrl);
+  const imageResponse = await fetch(dish.image);
   if (!imageResponse.ok) {
     return new Response("Could not load dish photo", { status: 502 });
   }
 
-  const imageBytes = new Uint8Array(await imageResponse.arrayBuffer());
-  let imageBinary = "";
-  for (let offset = 0; offset < imageBytes.length; offset += 0x8000) {
-    imageBinary += String.fromCharCode(...imageBytes.subarray(offset, offset + 0x8000));
-  }
-  const image = `data:${imageResponse.headers.get("content-type") || "image/jpeg"};base64,${btoa(imageBinary)}`;
+  const imageBytes = await sharp(Buffer.from(await imageResponse.arrayBuffer()))
+    .resize(816, 630, { fit: "cover" })
+    .jpeg({ quality: 82 })
+    .toBuffer();
+  const image = `data:image/jpeg;base64,${imageBytes.toString("base64")}`;
 
   return new ImageResponse(
     <div style={{ width: "100%", height: "100%", display: "flex", backgroundColor: "#fffaf1", color: "#172033" }}>
