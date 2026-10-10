@@ -21,13 +21,13 @@ export const metadata = {
     siteName: "Addis Eats",
     title: "Addis Eats | Ethiopian food delivery",
     description: "Discover freshly prepared local favourites from trusted kitchens across Addis Ababa.",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Addis Eats food delivery" }],
+    images: [{ url: "https://addis-eats-advanced.vercel.app/og-homepage.png", width: 1870, height: 915, alt: "Addis Eats food delivery" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Addis Eats | Ethiopian food delivery",
     description: "Discover freshly prepared local favourites from trusted kitchens across Addis Ababa.",
-    images: ["/opengraph-image"],
+    images: ["https://addis-eats-advanced.vercel.app/og-homepage.png"],
   },
 };
 const analyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
