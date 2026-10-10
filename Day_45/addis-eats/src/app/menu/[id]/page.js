@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
 
   const description = `${dish.summary} ${dish.price} ETB.`;
   const title = `${dish.name} · Addis Eats`;
-  const image = `/_next/image?url=${encodeURIComponent(dish.image)}&w=1200&q=75`;
+  const image = `/menu/${dish.id}/opengraph-image`;
   return {
     title: { absolute: title },
     description,
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }) {
       description,
       type: "website",
       url: `/menu/${dish.id}`,
-      images: [{ url: image, alt: `Photo of ${dish.name}` }],
+      images: [{ url: image, width: 1200, height: 630, alt: `Photo of ${dish.name}` }],
     },
     twitter: {
       card: "summary_large_image",
