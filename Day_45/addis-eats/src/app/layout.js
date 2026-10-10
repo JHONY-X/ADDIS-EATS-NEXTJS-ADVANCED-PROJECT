@@ -15,7 +15,20 @@ export const metadata = {
     default: "Addis Eats | Food delivery in Addis Ababa",
   },
   description: "Discover satisfying dishes and order food delivery across Addis Ababa with Addis Eats.",
-  openGraph: { type: "website", locale: "en_ET", siteName: "Addis Eats" },
+  openGraph: {
+    type: "website",
+    locale: "en_ET",
+    siteName: "Addis Eats",
+    title: "Addis Eats | Ethiopian food delivery",
+    description: "Discover freshly prepared local favourites from trusted kitchens across Addis Ababa.",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Addis Eats food delivery" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Addis Eats | Ethiopian food delivery",
+    description: "Discover freshly prepared local favourites from trusted kitchens across Addis Ababa.",
+    images: ["/opengraph-image"],
+  },
 };
 const analyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
