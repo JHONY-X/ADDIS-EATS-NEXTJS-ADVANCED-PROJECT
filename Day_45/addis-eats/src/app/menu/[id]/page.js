@@ -14,16 +14,24 @@ export async function generateMetadata({ params }) {
   if (!dish) return { title: "Dish not found" };
 
   const description = `${dish.summary} ${dish.price} ETB.`;
+  const title = `${dish.name} · Addis Eats`;
+  const image = `/_next/image?url=${encodeURIComponent(dish.image)}&w=1200&q=75`;
   return {
-    title: dish.name,
+    title: { absolute: title },
     description,
     alternates: { canonical: `/menu/${dish.id}` },
     openGraph: {
-      title: dish.name,
+      title,
       description,
       type: "website",
       url: `/menu/${dish.id}`,
-      images: [{ url: `/menu/${dish.id}/opengraph-image`, width: 1200, height: 630 }],
+      images: [{ url: image, alt: `Photo of ${dish.name}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
     },
   };
 }
