@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddToCart from "../AddToCart";
 import { dishes, findDish } from "../dishes";
+import { SITE_URL } from "@/lib/siteUrl";
 
 export function generateStaticParams() {
   return dishes.map((dish) => ({ id: String(dish.id) }));
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }) {
 
   const description = `${dish.summary} ${dish.price} ETB.`;
   const title = `${dish.name} · Addis Eats`;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://addis-eats.vercel.app";
+  const siteUrl = SITE_URL;
   const image = new URL(`/menu/${dish.id}/opengraph-image`, siteUrl).toString();
   return {
     title: { absolute: title },

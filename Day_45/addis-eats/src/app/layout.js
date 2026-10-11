@@ -4,12 +4,10 @@ import "./globals.css";
 import Providers from "./providers";
 import { getSession } from "@/lib/session";
 import SignOutButton from "./SignOutButton";
-
-
-
+import { SITE_URL } from "@/lib/siteUrl";
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://addis-eats-advanced.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
     template: "%s | Addis Eats",
     default: "Addis Eats | Food delivery in Addis Ababa",
@@ -18,16 +16,26 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_ET",
+    url: SITE_URL,
     siteName: "Addis Eats",
     title: "Addis Eats | Ethiopian food delivery",
     description: "Discover freshly prepared local favourites from trusted kitchens across Addis Ababa.",
-    images: [{ url: "/og-homepage.png", width: 1870, height: 915, alt: "Addis Eats food delivery" }],
+    images: [
+      {
+        url: `${SITE_URL}/og-homepage.png`,
+        secureUrl: `${SITE_URL}/og-homepage.png`,
+        width: 1870,
+        height: 915,
+        type: "image/png",
+        alt: "Addis Eats food delivery",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Addis Eats | Ethiopian food delivery",
     description: "Discover freshly prepared local favourites from trusted kitchens across Addis Ababa.",
-    images: ["/og-homepage.png"],
+    images: [`${SITE_URL}/og-homepage.png`],
   },
 };
 const analyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
