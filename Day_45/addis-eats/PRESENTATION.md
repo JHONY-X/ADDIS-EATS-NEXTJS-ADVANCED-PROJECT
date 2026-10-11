@@ -126,6 +126,8 @@ This section details the critical production issues encountered during developme
 
 ---
 
+---
+
 ## Production Verification Matrix
 
 | Test Case | Scenario | Expected Outcome | Production Result |
@@ -136,6 +138,30 @@ This section details the critical production issues encountered during developme
 | **TC-04** | Access `/kitchen` as Chef Hana (Staff) | Renders kitchen orders dashboard | **PASS** (Role authorized) |
 | **TC-05** | Social Link Preview Crawler (`curl -A "TelegramBot"`) | Valid OG metadata & image URL | **PASS** (HTTP 200 on OG image) |
 | **TC-06** | Next.js Production Build (`npm run build`) | Zero errors, static & dynamic routes compiled | **PASS** (Exit Code 0) |
+
+---
+
+## Performance & Lighthouse Production Audit
+
+Audit executed directly against the live production deployment: **`https://addis-eats-advanced.vercel.app`**.
+
+![Lighthouse Audit Scores - 99 Performance, 100 Accessibility, 100 Best Practices, 100 SEO](./public/lighthouse-audit.png)
+
+### Audit Scorecard
+
+| Category | Score | Rating | Highlights |
+| :--- | :---: | :---: | :--- |
+| **Performance** | **99** / 100 | 🟢 Near-Perfect | Fast initial render, zero blocking scripts, optimized hero typography |
+| **Accessibility** | **100** / 100 | 🟢 Perfect | Proper ARIA roles, high color contrast, full semantic landmark hierarchy |
+| **Best Practices** | **100** / 100 | 🟢 Perfect | Secure cookies (`httpOnly`, `sameSite=lax`), HTTPS enforced, modern image formats |
+| **SEO** | **100** / 100 | 🟢 Perfect | Automated dynamic sitemap, robots.txt, canonical metadataBase resolution |
+| **Agentic Browsing** | **2 / 2** | 🟢 Perfect | Optimized structured metadata and semantic machine-readability |
+
+### Key Optimizations Enabling 99 Performance
+1. **Next.js 16 Server Components (RSC):** Eliminates heavy client JS bundles by shipping pure HTML for static marketing & hero sections.
+2. **Turbopack Asset Bundling:** Ultra-lean production CSS chunks without bulky external UI frameworks.
+3. **Stateless Edge Architecture:** Zero latency session verification at the edge without database blocking roundtrips.
+
 
 ---
 
