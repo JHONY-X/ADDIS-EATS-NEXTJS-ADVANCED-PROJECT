@@ -1,4 +1,5 @@
 // src/lib/session.js
+import crypto from "node:crypto";
 import { cookies } from "next/headers";
 
 // ─── Users (demo only — a real app uses a database) ─────
@@ -27,12 +28,51 @@ export const users = [
   },
 ];
 
-// In-memory session store — a real app uses a database table
-// { sessionId → { userId, expiresAt } }
-// Attach to globalThis so Route Handlers and Server Components share the exact same store
-const sessions = globalThis.__sessions ?? (globalThis.__sessions = new Map());
+const SESSION_SECRET =
+  process.env.SESSION_SECRET || "addis-eats-session-secret-key-at-least-32-chars-long";
 
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+// Create HMAC-SHA256 signed session token for serverless compatibility across all Vercel instances
+function createSessionToken(payload) {
+  const data = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const signature = crypto
+    .createHmac("sha256", SESSION_SECRET)
+    .update(data)
+    .digest("base64url");
+  return `${data}.${signature}`;
+}
+
+// Verify HMAC-SHA256 signed session token
+function verifySessionToken(token) {
+  if (!token || typeof token !== "string") return null;
+  const dotIndex = token.indexOf(".");
+  if (dotIndex === -1) return null;
+
+  const data = token.slice(0, dotIndex);
+  const signature = token.slice(dotIndex + 1);
+
+  const expectedSignature = crypto
+    .createHmac("sha256", SESSION_SECRET)
+    .update(data)
+    .digest("base64url");
+
+  const sigBuf = Buffer.from(signature);
+  const expBuf = Buffer.from(expectedSignature);
+  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+    return null;
+  }
+
+  try {
+    const payload = JSON.parse(Buffer.from(data, "base64url").toString());
+    if (payload.expiresAt && payload.expiresAt < Date.now()) {
+      return null;
+    }
+    return payload;
+  } catch {
+    return null;
+  }
+}
 
 // ─── Sign in ────────────────────────────────────────────
 export async function signIn(email, password) {
@@ -41,20 +81,19 @@ export async function signIn(email, password) {
   );
   if (!user) return null;
 
-  // Generate a cryptographically random session id
-  const sessionId = crypto.randomUUID();
-
-  sessions.set(sessionId, {
+  const payload = {
     userId: user.id,
     expiresAt: Date.now() + SESSION_TTL_MS,
-  });
+  };
+
+  const sessionId = createSessionToken(payload);
 
   return { sessionId, user: { id: user.id, name: user.name, role: user.role } };
 }
 
 // ─── Sign out ───────────────────────────────────────────
-export async function signOut(sessionId) {
-  sessions.delete(sessionId);
+export async function signOut(_sessionId) {
+  // Stateless signed tokens are invalidated by clearing the cookie in /api/auth/signout
 }
 
 // ─── Read the current user ─────────────────────────────
@@ -63,14 +102,10 @@ export async function getSession() {
   const token = (await cookies()).get("session")?.value;
   if (!token) return null;
 
-  const record = sessions.get(token);
-  if (!record) return null;
-  if (record.expiresAt < Date.now()) {
-    sessions.delete(token);
-    return null;
-  }
+  const payload = verifySessionToken(token);
+  if (!payload?.userId) return null;
 
-  const user = users.find((u) => u.id === record.userId);
+  const user = users.find((u) => u.id === payload.userId);
   if (!user) return null;
 
   // Never return the password
@@ -78,8 +113,6 @@ export async function getSession() {
 }
 
 // ─── Cookie configuration ───────────────────────────────
-// Centralised so all three places (sign-in, sign-out, getSession)
-// use the same flags.
 export const SESSION_COOKIE_NAME = "session";
 
 export function sessionCookieOptions() {

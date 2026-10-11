@@ -29,7 +29,8 @@ export default function SignInForm({ next, users = [] }) {
       }
 
       // Redirect to the intended destination after successful sign-in
-      window.location.href = next;
+      const destination = (!next || next === "/signin" || next.startsWith("/signin?") || next.startsWith("/signin/")) ? "/" : next;
+      window.location.href = destination;
     } catch {
       setError("Could not connect to the server. Please try again.");
     } finally {
@@ -96,7 +97,8 @@ export default function SignInForm({ next, users = [] }) {
                         setError(result.error || "Invalid credentials.");
                         return;
                       }
-                      window.location.href = next;
+                      const destination = (!next || next === "/signin" || next.startsWith("/signin?") || next.startsWith("/signin/")) ? "/" : next;
+                      window.location.href = destination;
                     } catch {
                       setError("Could not connect to the server. Please try again.");
                     } finally {

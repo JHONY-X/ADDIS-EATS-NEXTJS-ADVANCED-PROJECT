@@ -13,7 +13,7 @@ export default async function SignInPage({ searchParams }) {
   const sp = await searchParams;
   // Validate the `next` parameter — must start with single "/" to prevent open-redirect attacks
   let next = sp?.next || "/";
-  if (typeof next !== "string" || !next.startsWith("/") || next.startsWith("//")) {
+  if (typeof next !== "string" || !next.startsWith("/") || next.startsWith("//") || next === "/signin" || next.startsWith("/signin?") || next.startsWith("/signin/")) {
     next = "/";
   }
 
