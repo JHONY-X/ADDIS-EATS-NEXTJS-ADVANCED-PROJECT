@@ -79,9 +79,29 @@ export default function SignInForm({ next, users = [] }) {
                 <button
                   type="button"
                   className="demo-account-btn"
-                  onClick={() => {
+                  disabled={isSubmitting}
+                  onClick={async () => {
                     setEmail(u.email);
                     setPassword(u.password);
+                    setError("");
+                    setIsSubmitting(true);
+                    try {
+                      const response = await fetch("/api/auth/signin", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: u.email, password: u.password }),
+                      });
+                      const result = await response.json();
+                      if (!response.ok) {
+                        setError(result.error || "Invalid credentials.");
+                        return;
+                      }
+                      window.location.href = next;
+                    } catch {
+                      setError("Could not connect to the server. Please try again.");
+                    } finally {
+                      setIsSubmitting(false);
+                    }
                   }}
                 >
                   <strong>{u.name}</strong>
